@@ -1724,7 +1724,7 @@ class _BaseAlertRule(object):
         return data
 
     def to_json_data(self):
-        pass
+        raise NotImplementedError("This abstract method must be implemented in a subclass")
 
 
 @attr.s
@@ -1732,10 +1732,16 @@ class AlertRulev9(_BaseAlertRule):
     """
     Create a Grafana 9.x+ Alert Rule
     """
-    
+
     triggers = attr.ib(factory=list, validator=is_valid_triggersv9)
 
     def to_json_data(self):
+
+        if self.dashboard_uid:
+            self.annotations['__dashboardUid__'] = self.dashboard_uid
+        if self.panel_id:
+            self.annotations['__panelId__'] = f"{self.panel_id}"
+
         return {
             "uid": self.uid,
             "for": self.evaluateFor,
@@ -1748,6 +1754,8 @@ class AlertRulev9(_BaseAlertRule):
                 "no_data_state": self.noDataAlertState,
                 "exec_err_state": self.errorAlertState,
             },
+            "dashboardUid": self.dashboard_uid,
+            "panelId": self.panel_id,
         }
 
 
@@ -1756,10 +1764,14 @@ class AlertRulev10(_BaseAlertRule):
     """
     Create a Grafana 10.x+ Alert Rule
     """
-    
+
     triggers = attr.ib(factory=list, validator=is_valid_triggersv10)
 
     def to_json_data(self):
+        if self.dashboard_uid:
+            self.annotations['__dashboardUid__'] = self.dashboard_uid
+        if self.panel_id:
+            self.annotations['__panelId__'] = f"{self.panel_id}"
         return {
             "uid": self.uid,
             "for": self.evaluateFor,
