@@ -1789,6 +1789,7 @@ class AlertRulev10(_BaseAlertRule):
     """
     Create a Grafana 10.x+ Alert Rule
     """
+    ruleGroup = attr.ib(default=None, validator=instance_of(str))
 
     triggers = attr.ib(factory=list, validator=is_valid_triggersv10)
 
@@ -1807,6 +1808,7 @@ class AlertRulev10(_BaseAlertRule):
             "data": self._render_triggers(),
             "noDataState": self.noDataAlertState,
             "execErrState": self.errorAlertState,
+            "ruleGroup": self.ruleGroup,
         }
 
 
